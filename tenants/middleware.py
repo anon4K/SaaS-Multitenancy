@@ -1,7 +1,8 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.shortcuts import redirect
 from django.urls import reverse
-from .models import Tenant
+from .models import Tenant, Project
+from .managers import TenantManager
 
 
 class TenantMiddleware(MiddlewareMixin):
@@ -18,10 +19,14 @@ class TenantMiddleware(MiddlewareMixin):
 
                 request.tenant = tenant
 
+                Project.objects.set_tenant(tenant) #type: ignore
+
             except Tenant.DoesNotExist:
                 request.tenant = None
+                Project.objects.set_tenant(None) #type: ignore
 
         else:
             request.tenant = None
+            Project.objects.set_tenant(None)  #type: ignore
 
         return None

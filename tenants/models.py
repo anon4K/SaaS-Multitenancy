@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 import uuid
+from .managers import TenantManager
 
 class Tenant(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -92,30 +93,32 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.first_name} {self.last_name}".strip() or self.email   
 
 class Project(models.Model):
-    name = models.CharField(max_length=100)
+    
+    name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-
+    
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
         related_name='projects'
     )
-
+    
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
         related_name='projects_created'
     )
-
+    
     is_active = models.BooleanField(default=True)
-
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
+    objects = TenantManager()  
+    
     class Meta:
         ordering = ['-created_at']
-
+    
     def __str__(self):
         return f"{self.name} ({self.tenant.name})"
-    
