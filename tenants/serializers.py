@@ -152,7 +152,7 @@ class TenantRegistrationSerializer(serializers.ModelSerializer):
             tenant=tenant,
             first_name=admin_first_name,
             last_name=admin_last_name,
-            is_staff=True  # Make them staff for their tenant
+            is_staff=True  
         )
         
         return tenant

@@ -19,14 +19,14 @@ class TenantMiddleware(MiddlewareMixin):
 
                 request.tenant = tenant
 
-                Project.objects.set_tenant(tenant) #type: ignore
+                Project.objects.set_tenant(tenant) 
 
             except Tenant.DoesNotExist:
                 request.tenant = None
-                Project.objects.set_tenant(None) #type: ignore
+                Project.objects.set_tenant(None) 
 
         else:
             request.tenant = None
-            Project.objects.set_tenant(None)  #type: ignore
+            Project.objects.set_tenant(None)  
 
         return None
